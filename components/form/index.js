@@ -37,7 +37,7 @@ const Form = () => {
             Name should contain atleast 3 character.
           </FormControl.HelperText>}
       </FormControl>
-      <Button onPress={onSubmit} mt="5" colorScheme="cyan">
+      <Button onPress={onSubmit} mt="5" bg="blue.600" >
         Submit
       </Button>
     </VStack>;
