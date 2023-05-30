@@ -1,8 +1,12 @@
 import { NativeBaseProvider, Box, VStack, Center, Drawer } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Form from "./components/form";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import ListaSolictacoes from "./views/lista-solicitacoes";
+import FormularioSolicitacao from "./views/formulario-solicitacao";
+import Endereco from "./views/endereco";
+import Notificacoes from "./views/notificacoes";
+import Conta from "./views/conta";
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -10,10 +14,11 @@ export default function App() {
   const screenOptions = ({ route }) => ({
     tabBarIcon: ({ focused, color, size }) => {
       const icons = {
-        Home: "ios-information-circle-outline",
-        Search: "ios-list",
-        Cart: "ios-cart-outline",
-        Account: "person-circle",
+        Postagens: "ios-information-circle-outline",
+        'Postar Encomenda': "ios-cart-outline",
+        Endereço: "ios-list",
+        'Notificações': 'ios-notifications-outline',
+        Conta: "person-circle",
       };
       let iconName = icons[route.name];
 
@@ -26,11 +31,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        <Tab.Navigator initialRouteName="Home" screenOptions={screenOptions}>
-          <Tab.Screen name="Home" component={() => <div>Home</div>} />
-          <Tab.Screen name="Cart" component={Form} />
-          <Tab.Screen name="Search" component={() => <div>Search</div>} />
-          <Tab.Screen name="Account" component={() => <div>Account</div>} />
+        <Tab.Navigator initialRouteName="Postagens" screenOptions={screenOptions}>
+          <Tab.Screen name="Postagens" component={ListaSolictacoes} />
+          <Tab.Screen name="Postar Encomenda" component={FormularioSolicitacao} />
+          <Tab.Screen name="Notificações" component={Notificacoes} />
+          <Tab.Screen name="Conta" component={Conta} />
         </Tab.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>
