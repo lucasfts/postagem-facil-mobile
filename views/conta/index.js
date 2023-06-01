@@ -18,7 +18,7 @@ const Conta = () => {
             </VStack>
         </HStack>
         <VStack space={3} margin={5} p={5} bg={'white'} >
-            <Heading>Endereço</Heading>
+            <Heading size="md">Endereço</Heading>
             <Endereco />
         </VStack>
     </Box>
