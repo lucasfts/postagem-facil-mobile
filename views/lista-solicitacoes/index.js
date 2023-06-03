@@ -1,4 +1,4 @@
-import { Box, FlatList, Heading, Stack, Text } from "native-base";
+import { Box, FlatList, HStack, Heading, Stack, Text } from "native-base";
 
 const SolicitacaoCard = ({ id, dimensoes, peso, valorCobrado, status }) => {
   return <Box alignItems="center" margin={2}  >
@@ -13,15 +13,22 @@ const SolicitacaoCard = ({ id, dimensoes, peso, valorCobrado, status }) => {
     }}>
       <Stack p="4" space={3}  >
         <Stack space={2}>
-          <Heading size="md">Id: {id}</Heading>
+          <Heading size="md">Postagem Id: {id}</Heading>
           <Text fontSize="xs" fontWeight="500">
             R$ {valorCobrado}
           </Text>
         </Stack>
         <Text >Status: {status} </Text>
-        <Text >Data Solicitação: {new Date().toLocaleString()}</Text>
-        <Text >Dimensões: {dimensoes}</Text>
+        <Text >Transportadora: {'Correios'}</Text>
+        <Text >Tipo de caixa: {dimensoes}</Text>
         <Text >Peso: {peso}</Text>
+        <Stack mt={3} >
+          <Text textAlign={'right'} color="coolGray.600" _dark={{
+            color: "warmGray.200"
+          }} fontWeight="400">
+            Solicitado em {new Date().toLocaleString()}
+          </Text>
+        </Stack>
       </Stack>
     </Box>
   </Box>;

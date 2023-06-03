@@ -1,5 +1,7 @@
 import React from 'react';
-import { VStack, Button, FormControl, Input, Select, WarningOutlineIcon, CheckIcon, Text, HStack } from 'native-base';
+import { VStack, Button, FormControl, Input, Select, WarningOutlineIcon, Text, HStack } from 'native-base';
+import * as DocumentPicker from 'expo-document-picker';
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const FormularioSolicitacao = () => {
   const [formData, setData] = React.useState({});
@@ -26,15 +28,22 @@ const FormularioSolicitacao = () => {
     { id: 3, nome: "Entre 10kg e 20kg" }
   ];
 
+  const pickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    setData({ ...formData, etiqueta: result });
+  }
+
   const validate = () => {
     const validationErrors = {};
-    
+
     if (!formData.transportadora)
       validationErrors.transportadora = 'O campo Transportadora é obrigatório';
     if (!formData.tipoCaixa)
       validationErrors.tipoCaixa = 'O campo Tipo de caixa é obrigatório';
     if (!formData.peso)
       validationErrors.peso = 'O campo Peso é obrigatório';
+    if (!formData.etiqueta)
+      validationErrors.etiqueta = 'O campo Etiqueta de postagem é obrigatório';
 
     setErrors(validationErrors);
 
@@ -73,8 +82,17 @@ const FormularioSolicitacao = () => {
         {errors.peso}
       </FormControl.ErrorMessage>}
     </FormControl>
-    <HStack pt="4" space={1}>
-      <Text fontSize="sm" color={"muted.500"} fontWeight={500}>Custo:</Text>
+    <FormControl isRequired isInvalid={errors.etiqueta}>
+      <FormControl.Label>Etiqueta de postagem</FormControl.Label>
+      <Button variant="outline" leftIcon={<Ionicons name="cloud-upload-outline" />} onPress={pickDocument} >
+        <Text>Selecione o arquivo</Text>
+      </Button>
+      {errors.etiqueta && <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+        {errors.etiqueta}
+      </FormControl.ErrorMessage>}
+    </FormControl>
+    <HStack pt="4" space={1} mt={10}>
+      <Text fontSize="sm" color={"muted.500"} fontWeight={500}>Custo Total:</Text>
       <Text fontSize="sm" >R$ 123.00</Text>
     </HStack>
     <Button onPress={onSubmit} mt="5" bg="blue.600" >
