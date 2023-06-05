@@ -3,10 +3,11 @@ import { VStack, Button, FormControl, Input, Select, WarningOutlineIcon, Text, H
 import * as DocumentPicker from 'expo-document-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { obterCustoPostal, obterPesosLimite, obterTiposCaixa, obterTransportadoras } from '../../model/financeiro/financeiroService';
+import RequiredSelect from './components/RequiredSelect';
 
 const FormularioSolicitacao = () => {
   const [formData, setData] = useState({});
-  const [erros, seterros] = useState({});
+  const [erros, setErros] = useState({});
 
   const [transportadoras, setTransportadoras] = useState([]);
   const [tiposCaixa, setTiposCaixa] = useState([]);
@@ -36,8 +37,8 @@ const FormularioSolicitacao = () => {
 
 
   const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({});
-    setData({ ...formData, etiqueta: result });
+    let documento = await DocumentPicker.getDocumentAsync({});
+    setData({ ...formData, etiqueta: documento });
   }
 
   const validate = () => {
@@ -52,7 +53,7 @@ const FormularioSolicitacao = () => {
     if (!formData.etiqueta)
       errosValidacao.etiqueta = 'O campo Etiqueta de postagem é obrigatório';
 
-    seterros(errosValidacao);
+    setErros(errosValidacao);
 
     return Object.keys(errosValidacao);
   };
@@ -62,33 +63,33 @@ const FormularioSolicitacao = () => {
   };
 
   return <VStack width="calc(100% - 10)" mx="3" bg={'white'} p={5} m={5} >
-    <FormControl isRequired isInvalid={erros.transportadora}>
-      <FormControl.Label>Transportadora</FormControl.Label>
-      <Select placeholder="Escolha a transportadora" onValueChange={value => setData({ ...formData, transportadora: value })} >
-        {transportadoras.map(x => (<Select.Item label={x.nome} value={`${x.id}`} key={`transportadora-${x.id}`} />))}
-      </Select>
-      {erros.transportadora && <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-        {erros.transportadora}
-      </FormControl.ErrorMessage>}
-    </FormControl>
-    <FormControl isRequired isInvalid={erros.tipoCaixa}>
-      <FormControl.Label>Tipo de caixa</FormControl.Label>
-      <Select placeholder="Escolha o tipo de caixa (altura x largura x profundidade)" onValueChange={value => setData({ ...formData, tipoCaixa: value })} >
-        {tiposCaixa.map(x => (<Select.Item label={x.descricao} value={`${x.id}`} key={`tipoCaixa-${x.id}`} />))}
-      </Select>
-      {erros.tipoCaixa && <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-        {erros.tipoCaixa}
-      </FormControl.ErrorMessage>}
-    </FormControl>
-    <FormControl isRequired isInvalid={erros.pesoLimite}>
-      <FormControl.Label>Peso limite</FormControl.Label>
-      <Select placeholder="Escolha o peso limite" onValueChange={value => setData({ ...formData, pesoLimite: value })} >
-        {pesosLimite.map(x => (<Select.Item label={x.descricao} value={`${x.id}`} key={`pesoLimite-${x.id}`} />))}
-      </Select>
-      {erros.pesoLimite && <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-        {erros.pesoLimite}
-      </FormControl.ErrorMessage>}
-    </FormControl>
+    <RequiredSelect
+      items={transportadoras}
+      valueField={'id'}
+      textField={'nome'}
+      label={'Transportadora'}
+      placeholder={'Escolha a transportadora'}
+      error={erros.transportadora}
+      onChangeHandler={value => setData({ ...formData, transportadora: value })}
+    />
+    <RequiredSelect
+      items={tiposCaixa}
+      valueField={'id'}
+      textField={'descricao'}
+      label={'Tipo de caixa'}
+      placeholder={'Escolha o tipo de caixa (altura x largura x profundidade)'}
+      error={erros.tipoCaixa}
+      onChangeHandler={value => setData({ ...formData, tipoCaixa: value })}
+    />
+    <RequiredSelect
+      items={pesosLimite}
+      valueField={'id'}
+      textField={'descricao'}
+      label={'Peso limite'}
+      placeholder={'Escolha o peso limite'}
+      error={erros.pesoLimite}
+      onChangeHandler={value => setData({ ...formData, pesoLimite: value })}
+    />
     <FormControl isRequired isInvalid={erros.etiqueta}>
       <FormControl.Label>Etiqueta de postagem</FormControl.Label>
       <Button variant="outline" leftIcon={<Ionicons name="cloud-upload-outline" />} onPress={pickDocument} >
