@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const axiosInstance = axios.create({ baseURL: "https://localhost:44315/api/" });
+const axiosInstance = axios.create({ baseURL: "https://localhost:7108/api/" });
 
 const obterCustoPostal = async (transportadoraId, tipoCaixaId, pesoLimiteId) =>
     axiosInstance.get(`custos/transportadora/${transportadoraId}/tipo-caixa/${tipoCaixaId}/peso-limite/${pesoLimiteId}`)

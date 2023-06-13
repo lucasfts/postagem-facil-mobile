@@ -1,6 +1,8 @@
-import { Box, FlatList, HStack, Heading, Stack, Text } from "native-base";
+import { Box, FlatList, Heading, Stack, Text } from "native-base";
+import { useEffect, useState } from "react";
+import { obterSolicitacoesPorUsuario } from "../../model/financeiro/solicitacoesService";
 
-const SolicitacaoCard = ({ id, dimensoes, peso, valorCobrado, status }) => {
+const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, status, dataSolicitacao }) => {
   return <Box alignItems="center" margin={2}  >
     <Box width={'90%'} rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
       borderColor: "coolGray.600",
@@ -15,18 +17,18 @@ const SolicitacaoCard = ({ id, dimensoes, peso, valorCobrado, status }) => {
         <Stack space={2}>
           <Heading size="md">Postagem Id: {id}</Heading>
           <Text fontSize="xs" fontWeight="500">
-            R$ {valorCobrado}
+            R$ {custo}
           </Text>
         </Stack>
-        <Text >Status: {status} </Text>
-        <Text >Transportadora: {'Correios'}</Text>
-        <Text >Tipo de caixa: {dimensoes}</Text>
-        <Text >Peso: {peso}</Text>
+        <Text >Status: {status.descricao} </Text>
+        <Text >Transportadora: {transportadora.nome}</Text>
+        <Text >Tipo de caixa: {tipoCaixa.descricao}</Text>
+        <Text >Peso: {pesoLimite.descricao}</Text>
         <Stack mt={3} >
           <Text textAlign={'right'} color="coolGray.600" _dark={{
             color: "warmGray.200"
           }} fontWeight="400">
-            Solicitado em {new Date().toLocaleString()}
+            Solicitado em {dataSolicitacao.toLocaleString()}
           </Text>
         </Stack>
       </Stack>
@@ -35,29 +37,14 @@ const SolicitacaoCard = ({ id, dimensoes, peso, valorCobrado, status }) => {
 };
 
 const ListaSolictacoes = () => {
-  const data = [{
-    id: 1,
-    usuario: 'Jose',
-    enderecoRetirada: 'Rua abc',
-    enderecoEntrega: 'Avenida 123',
-    dimensoes: '190x50x30',
-    peso: '12kg',
-    valorCobrado: '785.00',
-    status: 'Coletado'
-  },
-  {
-    id: 2,
-    usuario: 'Maria',
-    enderecoRetirada: 'Rua abc',
-    enderecoEntrega: 'Avenida 123',
-    dimensoes: '190x50x30',
-    peso: '12kg',
-    valorCobrado: '785.00',
-    status: 'Coletado'
-  },
-  ];
+  const usuarioId = 89;
+  const [solicitacoes, setSolicitacoes] = useState([]);
 
-  return <FlatList data={data} renderItem={({ item }) => <SolicitacaoCard {...item} />} />
+  useEffect(() => {
+    obterSolicitacoesPorUsuario(usuarioId).then(setSolicitacoes);
+  }, []);
+
+  return <FlatList data={solicitacoes} renderItem={({ item }) => <SolicitacaoCard {...item} />} />
 }
 
 export default ListaSolictacoes;
