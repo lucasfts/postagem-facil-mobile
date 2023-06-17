@@ -12,7 +12,7 @@ const criarSolicitacao = async (solicitacao) => {
     };
     var formData = new FormData();
     Object.keys(solicitacao).forEach(key => formData.append(key, solicitacao[key]));
-    axiosInstance.post(`solicitacoes`, formData, headers)
+    return axiosInstance.post(`solicitacoes`, formData, headers)
         .then(response => response.data);
 }
 

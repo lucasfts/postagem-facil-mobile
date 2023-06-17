@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { VStack, Button, FormControl, Input, Select, WarningOutlineIcon, Text, HStack } from 'native-base';
+import { VStack, Button, FormControl, Input, Select, WarningOutlineIcon, Text, HStack, Spinner } from 'native-base';
 import * as DocumentPicker from 'expo-document-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { obterCustoPostal, obterPesosLimite, obterTiposCaixa, obterTransportadoras } from '../../model/financeiro/financeiroService';
 import RequiredSelect from './components/RequiredSelect';
 import { criarSolicitacao } from "../../model/financeiro/solicitacoesService";
+import CustomAlert from '../../components/CustomAlert';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
-const FormularioSolicitacao = () => {
-  const [solicitacao, setSolicitacao] = useState({ usuarioId: 89 });
+const FormularioSolicitacao = ({ navigation }) => {
+  const [solicitacao, setSolicitacao] = useState({ });
   const [erros, setErros] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [alerta, setAlerta] = useState(null);
 
   const [transportadoras, setTransportadoras] = useState([]);
   const [tiposCaixa, setTiposCaixa] = useState([]);
@@ -17,8 +22,21 @@ const FormularioSolicitacao = () => {
   useEffect(() => {
     obterTransportadoras().then(setTransportadoras);
     obterTiposCaixa().then(setTiposCaixa);
-    obterPesosLimite().then(setPesosLimite);
+    obterPesosLimite().then(setPesosLimite);   
   }, []);
+
+  useFocusEffect(useCallback(() => {
+    setSolicitacao({
+      usuarioId: 89,
+      transportadoraId: "",
+      tipoCaixaId: "",
+      pesoLimiteId: "",
+      etiqueta: null
+    });
+    setErros({});
+    setIsLoading(false);
+    setAlerta(null);
+  }, []));
 
   useEffect(() => {
     if (solicitacao.transportadoraId && solicitacao.tipoCaixaId && solicitacao.pesoLimiteId) {
@@ -57,13 +75,28 @@ const FormularioSolicitacao = () => {
     return Object.keys(errosValidacao).length === 0;
   };
 
+  useEffect(() => {
+    if(alerta){
+      setTimeout(() => {
+        setAlerta(null);
+      }, 3000);
+    }
+  }, [alerta]);
+
   const onSubmit = () => {
     if (validate()) {
-      criarSolicitacao(solicitacao);
+      setIsLoading(true);
+      criarSolicitacao(solicitacao)
+        .then(() => { 
+          navigation.navigate('Postagens', { alerta: { status: 'success', title: 'Solicitação criada com sucesso' } });
+         })
+        .catch(erro => { console.log(erro); setAlerta({ status: 'error', title: 'Ops! Houve um erro ao criar a solicitação.' }); })
+        .finally(() => { setIsLoading(false); });
     }
   };
 
   return <VStack width="calc(100% - 10)" mx="3" bg={'white'} p={5} m={5} >
+    {alerta && <CustomAlert status={alerta.status} title={alerta.title} closeHandler={() => setAlerta(null)} />}
     <RequiredSelect
       items={transportadoras}
       valueField={'id'}
@@ -71,6 +104,7 @@ const FormularioSolicitacao = () => {
       label={'Transportadora'}
       placeholder={'Escolha a transportadora'}
       error={erros.transportadoraId}
+      selectedValue={solicitacao.transportadoraId}
       onChangeHandler={value => setSolicitacao({ ...solicitacao, transportadoraId: value })}
     />
     <RequiredSelect
@@ -80,6 +114,7 @@ const FormularioSolicitacao = () => {
       label={'Tipo de caixa'}
       placeholder={'Escolha o tipo de caixa (altura x largura x profundidade)'}
       error={erros.tipoCaixaId}
+      selectedValue={solicitacao.tipoCaixaId}
       onChangeHandler={value => setSolicitacao({ ...solicitacao, tipoCaixaId: value })}
     />
     <RequiredSelect
@@ -89,12 +124,13 @@ const FormularioSolicitacao = () => {
       label={'Peso limite'}
       placeholder={'Escolha o peso limite'}
       error={erros.pesoLimiteId}
+      selectedValue={solicitacao.pesoLimiteId}
       onChangeHandler={value => setSolicitacao({ ...solicitacao, pesoLimiteId: value })}
     />
     <FormControl isRequired isInvalid={erros.etiqueta}>
       <FormControl.Label>Etiqueta de postagem</FormControl.Label>
       <Button variant="outline" leftIcon={<Ionicons name="cloud-upload-outline" />} onPress={pickDocument} >
-        <Text>{ solicitacao.etiqueta?.name || "Selecione o arquivo"}</Text>
+        <Text>{solicitacao.etiqueta?.name || "Selecione o arquivo"}</Text>
       </Button>
       {erros.etiqueta && <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
         {erros.etiqueta}
@@ -104,8 +140,11 @@ const FormularioSolicitacao = () => {
       <Text fontSize="sm" color={"muted.500"} fontWeight={500}>Custo Total:</Text>
       <Text fontSize="sm" >R$ {solicitacao.custo}</Text>
     </HStack>}
-    <Button onPress={onSubmit} mt="5" bg="blue.600" >
-      Solicitar Postagem
+    <Button disabled={isLoading} onPress={onSubmit} mt="5" bg="blue.600" >
+      <HStack space={2}>
+        <Text color={'white'} >Solicitar Postagem</Text>
+        {isLoading && <Spinner color={'white'} />}
+      </HStack>
     </Button>
   </VStack>;
 }

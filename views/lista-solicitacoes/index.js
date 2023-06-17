@@ -1,10 +1,13 @@
-import { Box, FlatList, Heading, Stack, Text } from "native-base";
-import { useEffect, useState } from "react";
+import { Box, FlatList, Heading, Stack, Text, VStack } from "native-base";
+import { useCallback, useState } from "react";
 import { obterSolicitacoesPorUsuario } from "../../model/financeiro/solicitacoesService";
+import { useFocusEffect } from '@react-navigation/native';
+import CustomAlert from "../../components/CustomAlert";
+import { useEffect } from "react";
 
 const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, status, dataSolicitacao }) => {
-  return <Box alignItems="center" margin={2}  >
-    <Box width={'90%'} rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
+  return <Box alignItems="center" my={2} >
+    <Box width={'100%'} rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
       borderColor: "coolGray.600",
       backgroundColor: "gray.700"
     }} _web={{
@@ -36,15 +39,28 @@ const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, sta
   </Box>;
 };
 
-const ListaSolictacoes = () => {
+const ListaSolictacoes = ({ route }) => {
   const usuarioId = 89;
   const [solicitacoes, setSolicitacoes] = useState([]);
+  const [alerta, setAlerta] = useState(null);
 
   useEffect(() => {
-    obterSolicitacoesPorUsuario(usuarioId).then(setSolicitacoes);
-  }, []);
+    setAlerta(route.params?.alerta);
+    if (route.params?.alerta) {
+      setTimeout(() => {
+        setAlerta(null);
+      }, 3000);
+    }
+  }, [route]);
 
-  return <FlatList data={solicitacoes} renderItem={({ item }) => <SolicitacaoCard {...item} />} />
+  useFocusEffect(useCallback(() => {
+    obterSolicitacoesPorUsuario(usuarioId).then(setSolicitacoes);
+  }, []));
+
+  return <VStack space={2} mt={2} w={'90%'} h={'100%'} alignSelf={'center'} >
+    {alerta && <CustomAlert status={alerta.status} title={alerta.title} closeHandler={() => setAlerta(null)} />}
+    <FlatList showsVerticalScrollIndicator={false} data={solicitacoes} renderItem={({ item }) => <SolicitacaoCard {...item} />} />
+  </VStack>
 }
 
 export default ListaSolictacoes;
