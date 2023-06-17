@@ -13,11 +13,11 @@ export default function App() {
   const screenOptions = ({ route }) => ({
     tabBarIcon: ({ focused, color, size }) => {
       const icons = {
-        Postagens: "ios-information-circle-outline",
-        'Postar Encomenda': "ios-cart-outline",
-        Endereço: "ios-list",
+        'Postagens': "ios-list",
+        'Postar Encomenda': "ios-create-outline",
+        'Endereço': "ios-list",
         'Notificações': 'ios-notifications-outline',
-        Conta: "person-circle",
+        'Conta': "person-outline",
       };
       let iconName = icons[route.name];
 
