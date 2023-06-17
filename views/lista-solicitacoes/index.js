@@ -4,6 +4,7 @@ import { obterSolicitacoesPorUsuario } from "../../model/financeiro/solicitacoes
 import { useFocusEffect } from '@react-navigation/native';
 import CustomAlert from "../../components/CustomAlert";
 import { useEffect } from "react";
+import dateFormat from 'dateformat';
 
 const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, status, dataSolicitacao }) => {
   return <Box alignItems="center" my={2} >
@@ -20,7 +21,7 @@ const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, sta
         <Stack space={2}>
           <Heading size="md">Postagem Id: {id}</Heading>
           <Text fontSize="xs" fontWeight="500">
-            R$ {custo}
+            R$ {custo.toFixed(2)}
           </Text>
         </Stack>
         <Text >Status: {status.descricao} </Text>
@@ -31,7 +32,7 @@ const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, sta
           <Text textAlign={'right'} color="coolGray.600" _dark={{
             color: "warmGray.200"
           }} fontWeight="400">
-            Solicitado em {dataSolicitacao.toLocaleString()}
+            Solicitado em {dateFormat(dataSolicitacao, "dd/mm/yyyy HH:MM:ss")}
           </Text>
         </Stack>
       </Stack>

@@ -12,6 +12,7 @@
     "@expo/webpack-config": "^18.0.1",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "axios": "^1.4.0",
+    "dateformat": "^5.0.3",
     "expo": "~48.0.15",
     "expo-document-picker": "~11.2.2",
     "expo-status-bar": "~1.4.4",
