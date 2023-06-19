@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import { NativeBaseProvider } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { NavigationContainer } from "@react-navigation/native";
@@ -6,9 +7,11 @@ import ListaSolictacoes from "./views/lista-solicitacoes";
 import FormularioSolicitacao from "./views/formulario-solicitacao";
 import Notificacoes from "./views/notificacoes";
 import Conta from "./views/conta";
+import { AuthContext, AuthContextProvider } from "./auth/AuthContext";
 
-export default function App() {
+const AppNavigation = () => {
   const Tab = createBottomTabNavigator();
+  const { authResult } = useContext(AuthContext);
 
   const screenOptions = ({ route }) => ({
     tabBarIcon: ({ focused, color, size }) => {
@@ -27,7 +30,7 @@ export default function App() {
     tabBarInactiveTintColor: "gray"
   });
 
-  return (
+  return authResult &&
     <NavigationContainer>
       <NativeBaseProvider>
         <Tab.Navigator initialRouteName="Postagens" screenOptions={screenOptions}>
@@ -38,5 +41,11 @@ export default function App() {
         </Tab.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>
-  );
+}
+
+
+export default function App() {
+  return <AuthContextProvider>
+    <AppNavigation />
+  </AuthContextProvider>
 }

@@ -1,25 +1,36 @@
-import { Avatar, Box, HStack, Heading, Text, VStack } from "native-base";
-import Endereco from "../endereco";
+import { Avatar, Box, Button, Divider, HStack, Heading, Text, VStack } from "native-base";
+import { useContext } from "react";
+import { AuthContext } from "../../auth/AuthContext";
 
 const Conta = () => {
-    return <Box>
-        <HStack space={3} margin={5} p={5} bg={'white'} >
+    const { authResult, signOut } = useContext(AuthContext);
+    const userClaims = authResult?.account.claims;
+
+    return <Box bg={'white'} m={5} p={5}>
+        <HStack space={3} m={5} >
             <Avatar size="70px" source={require('../../assets/avatar.png')} />
             <VStack>
-                <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
-                    {'Fulano'}
+                <Heading size="md">
+                    {userClaims.given_name} {userClaims.family_name}
+                </Heading>
+                <Text>
+                    Email: {userClaims.emails[0]}
                 </Text>
-                <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                    Email: {'fulano@gmail.com'}
-                </Text>
-                <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                    Tel: 12345-6789
+                <Text>
+                    Tel: {userClaims.extension_Phone}
                 </Text>
             </VStack>
         </HStack>
-        <VStack space={3} margin={5} p={5} bg={'white'} >
+        <VStack space={2} m={5} my={0} >
             <Heading size="md">Endereço</Heading>
-            <Endereco />
+            <Text >CEP: {userClaims.postalCode}</Text>
+            <Text >Endereço: {userClaims.streetAddress}</Text>
+            <Text >Estado: {userClaims.state}</Text>
+            <Text >Cidade: {userClaims.city}</Text>
+
+            <Button onPress={signOut} mt="5" bg="blue.600" >
+                Sair
+            </Button>
         </VStack>
     </Box>
 }
