@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { VStack, Button, FormControl, Input, Select, WarningOutlineIcon, Text, HStack, Spinner } from 'native-base';
 import * as DocumentPicker from 'expo-document-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -8,9 +8,11 @@ import { criarSolicitacao } from "../../model/financeiro/solicitacoesService";
 import CustomAlert from '../../components/CustomAlert';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { AuthContext } from '../../auth/AuthContext';
 
 const FormularioSolicitacao = ({ navigation }) => {
-  const [solicitacao, setSolicitacao] = useState({ });
+  const { userClaims } = useContext(AuthContext);
+  const [solicitacao, setSolicitacao] = useState({});
   const [erros, setErros] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [alerta, setAlerta] = useState(null);
@@ -22,12 +24,12 @@ const FormularioSolicitacao = ({ navigation }) => {
   useEffect(() => {
     obterTransportadoras().then(setTransportadoras);
     obterTiposCaixa().then(setTiposCaixa);
-    obterPesosLimite().then(setPesosLimite);   
+    obterPesosLimite().then(setPesosLimite);
   }, []);
 
   useFocusEffect(useCallback(() => {
     setSolicitacao({
-      usuarioId: 89,
+      usuarioId: userClaims.oid,
       transportadoraId: "",
       tipoCaixaId: "",
       pesoLimiteId: "",
@@ -76,7 +78,7 @@ const FormularioSolicitacao = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if(alerta){
+    if (alerta) {
       setTimeout(() => {
         setAlerta(null);
       }, 3000);
@@ -87,9 +89,9 @@ const FormularioSolicitacao = ({ navigation }) => {
     if (validate()) {
       setIsLoading(true);
       criarSolicitacao(solicitacao)
-        .then(() => { 
+        .then(() => {
           navigation.navigate('Postagens', { alerta: { status: 'success', title: 'Solicitação criada com sucesso' } });
-         })
+        })
         .catch(erro => { console.log(erro); setAlerta({ status: 'error', title: 'Ops! Houve um erro ao criar a solicitação.' }); })
         .finally(() => { setIsLoading(false); });
     }

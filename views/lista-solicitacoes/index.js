@@ -3,8 +3,9 @@ import { useCallback, useState } from "react";
 import { obterSolicitacoesPorUsuario } from "../../model/financeiro/solicitacoesService";
 import { useFocusEffect } from '@react-navigation/native';
 import CustomAlert from "../../components/CustomAlert";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import dateFormat from 'dateformat';
+import { AuthContext } from "../../auth/AuthContext";
 
 const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, status, dataSolicitacao }) => {
   return <Box alignItems="center" my={2} >
@@ -41,7 +42,7 @@ const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, sta
 };
 
 const ListaSolictacoes = ({ route }) => {
-  const usuarioId = 89;
+  const { userClaims } = useContext(AuthContext);
   const [solicitacoes, setSolicitacoes] = useState([]);
   const [alerta, setAlerta] = useState(null);
 
@@ -55,7 +56,7 @@ const ListaSolictacoes = ({ route }) => {
   }, [route]);
 
   useFocusEffect(useCallback(() => {
-    obterSolicitacoesPorUsuario(usuarioId).then(setSolicitacoes);
+    obterSolicitacoesPorUsuario(userClaims.oid).then(setSolicitacoes);
   }, []));
 
   return <VStack space={2} mt={2} w={'90%'} h={'100%'} alignSelf={'center'} >

@@ -3,8 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../auth/AuthContext";
 
 const Conta = () => {
-    const { authResult, signOut } = useContext(AuthContext);
-    const userClaims = authResult?.account.claims;
+    const { userClaims, signOut } = useContext(AuthContext);
 
     return <Box bg={'white'} m={5} p={5}>
         <HStack space={3} m={5} >

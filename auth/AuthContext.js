@@ -3,7 +3,7 @@ import { createContext, useState, useEffect } from "react";
 import { B2CClient } from './b2cClient';
 import { b2cConfig, b2cScopes as scopes } from './msalConfig';
 
-export const AuthContext = createContext({ authResult: null, signOut: null });
+export const AuthContext = createContext({ authResult: null, userClaims: null, signOut: null });
 
 export const AuthContextProvider = ({ children }) => {
     const b2cClient = new B2CClient(b2cConfig);
@@ -39,7 +39,7 @@ export const AuthContextProvider = ({ children }) => {
         }
     };
 
-    return <AuthContext.Provider value={{ authResult, signOut: signOutHandler }}>
+    return <AuthContext.Provider value={{ authResult, userClaims: { ...authResult?.account?.claims }, signOut: signOutHandler }}>
         {children}
     </AuthContext.Provider>
 }
