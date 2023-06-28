@@ -59,7 +59,7 @@ const ListaSolictacoes = ({ route }) => {
     obterSolicitacoesPorUsuario(userClaims.oid).then(setSolicitacoes);
   }, []));
 
-  return <VStack space={2} mt={2} w={'90%'} h={'100%'} alignSelf={'center'} >
+  return <VStack space={2} py={2} w={'90%'} h={'100%'} alignSelf={'center'} >
     {alerta && <CustomAlert status={alerta.status} title={alerta.title} closeHandler={() => setAlerta(null)} />}
     <FlatList showsVerticalScrollIndicator={false} data={solicitacoes} renderItem={({ item }) => <SolicitacaoCard {...item} />} />
   </VStack>

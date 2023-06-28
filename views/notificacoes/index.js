@@ -11,7 +11,7 @@ const Notificacoes = () => {
         { mensagem: 'A postagem será coletada hoje entre as 13h e 18h', data: new Date().toLocaleString() },
     ];
 
-    return <FlatList data={data} renderItem={({ item }) => <Notificacao {...item} />} />
+    return <FlatList py={3} data={data} renderItem={({ item }) => <Notificacao {...item} />} />
 }
 
 export default Notificacoes;

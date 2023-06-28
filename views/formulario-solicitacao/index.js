@@ -56,8 +56,13 @@ const FormularioSolicitacao = ({ navigation }) => {
 
 
   const pickDocument = async () => {
-    let documento = await DocumentPicker.getDocumentAsync({});
-    setSolicitacao({ ...solicitacao, etiqueta: documento.file });
+    let document = await DocumentPicker.getDocumentAsync();
+
+    if (document.uri && !document.file) {
+      document.file = { uri: document.uri, type: document.mimeType, name: document.name };
+    }
+
+    setSolicitacao({ ...solicitacao, etiqueta: document.file });
   }
 
   const validate = () => {
@@ -92,12 +97,16 @@ const FormularioSolicitacao = ({ navigation }) => {
         .then(() => {
           navigation.navigate('Postagens', { alerta: { status: 'success', title: 'Solicitação criada com sucesso' } });
         })
-        .catch(erro => { console.log(erro); setAlerta({ status: 'error', title: 'Ops! Houve um erro ao criar a solicitação.' }); })
+        .catch(erro => {
+          console.log(JSON.stringify(erro));
+          setAlerta({ status: 'error', title: 'Ops! Houve um erro ao criar a solicitação.' }
+          );
+        })
         .finally(() => { setIsLoading(false); });
     }
   };
 
-  return <VStack width="calc(100% - 10)" mx="3" bg={'white'} p={5} m={5} >
+  return <VStack mx="3" bg={'white'} p={5} m={5} >
     {alerta && <CustomAlert status={alerta.status} title={alerta.title} closeHandler={() => setAlerta(null)} />}
     <RequiredSelect
       items={transportadoras}

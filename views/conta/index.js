@@ -6,31 +6,29 @@ const Conta = () => {
     const { userClaims, signOut } = useContext(AuthContext);
 
     return <Box bg={'white'} m={5} p={5}>
-        <HStack space={3} m={5} >
-            <Avatar size="70px" source={require('../../assets/avatar.png')} />
-            <VStack>
-                <Heading size="md">
-                    {userClaims.given_name} {userClaims.family_name}
-                </Heading>
-                <Text>
-                    Email: {userClaims.emails[0]}
-                </Text>
-                <Text>
-                    Tel: {userClaims.extension_Phone}
-                </Text>
-            </VStack>
-        </HStack>
-        <VStack space={2} m={5} my={0} >
-            <Heading size="md">Endereço</Heading>
-            <Text >CEP: {userClaims.postalCode}</Text>
-            <Text >Endereço: {userClaims.streetAddress}</Text>
-            <Text >Estado: {userClaims.state}</Text>
-            <Text >Cidade: {userClaims.city}</Text>
 
-            <Button onPress={signOut} mt="5" bg="blue.600" >
+        <VStack alignItems={'center'}>
+            <Avatar size={100} source={require('../../assets/avatar.png')} />
+            <Heading size="md" pt={3}>
+                {userClaims.given_name} {userClaims.family_name}
+            </Heading>
+            <Text>
+                Email: {userClaims.emails[0]}
+            </Text>
+            <Text>
+                Tel: {userClaims.extension_Phone}
+            </Text>
+
+            <Heading size="md" pt={3}>Endereço</Heading>
+            <Text>CEP: {userClaims.postalCode}</Text>
+            <Text>{userClaims.streetAddress}</Text>
+            <Text>{userClaims.city} - {userClaims.state}</Text>
+            <Button onPress={signOut} w={200} mt="5" bg="blue.600" >
                 Sair
             </Button>
+
         </VStack>
+
     </Box>
 }
 
