@@ -1,9 +1,10 @@
 import axios from 'axios';
+import ENVIRONMENT from '../../environment';
 
-const axiosInstance = axios.create({ baseURL: "https://postagem-facil-api-gateway.azure-api.net/servico-solicitacoes/api/" });
+const axiosInstance = axios.create({ baseURL: ENVIRONMENT.SOLICITACOES_API });
 
-const obterSolicitacoesPorUsuario = async (usuarioId) =>
-    axiosInstance.get(`solicitacoes/${usuarioId}`)
+const obterSolicitacoesPorUsuario = async (clienteId) =>
+    axiosInstance.get(`solicitacoes/${clienteId}`)
         .then(response => response.data);
 
 const criarSolicitacao = async (solicitacao) => {

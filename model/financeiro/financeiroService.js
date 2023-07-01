@@ -1,6 +1,7 @@
 import axios from 'axios';
+import ENVIRONMENT from '../../environment';
 
-const axiosInstance = axios.create({ baseURL: "https://postagem-facil-api-gateway.azure-api.net/servico-financeiro/api/" });
+const axiosInstance = axios.create({ baseURL: ENVIRONMENT.FINANCEIRO_API });
 
 const obterCustoPostal = async (transportadoraId, tipoCaixaId, pesoLimiteId) =>
     axiosInstance.get(`custos/transportadora/${transportadoraId}/tipo-caixa/${tipoCaixaId}/peso-limite/${pesoLimiteId}`)
