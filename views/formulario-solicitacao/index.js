@@ -29,7 +29,9 @@ const FormularioSolicitacao = ({ navigation }) => {
 
   useFocusEffect(useCallback(() => {
     setSolicitacao({
-      usuarioId: userClaims.oid,
+      clienteId: userClaims.oid,
+      nomeCliente: `${userClaims.given_name} ${userClaims.family_name}`,
+      endereco: `${userClaims.streetAddress}, CEP: ${userClaims.postalCode}, ${userClaims.city} - ${userClaims.state}`,
       transportadoraId: "",
       tipoCaixaId: "",
       pesoLimiteId: "",
