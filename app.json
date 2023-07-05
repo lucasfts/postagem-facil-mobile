@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "PostagemFacil",
-    "slug": "PostagemFacil",
+    "slug": "postagem-facil",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -35,6 +35,12 @@
           "androidPackageSignatureHash": "M61nf+aC69kCXmFY1ejcX83rDNc="
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1cb046db-28c9-4237-aa9d-092c75f184c3"
+      }
+    },
+    "owner": "lucas.feitoza"
   }
 }
