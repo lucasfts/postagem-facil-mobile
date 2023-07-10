@@ -6,6 +6,7 @@ import CustomAlert from "../../components/CustomAlert";
 import { useEffect, useContext } from "react";
 import dateFormat from 'dateformat';
 import { AuthContext } from "../../auth/AuthContext";
+import Loading from "../../components/Loading";
 
 const SolicitacaoCard = ({ id, transportadora, tipoCaixa, pesoLimite, custo, status, dataSolicitacao }) => {
   return <Box alignItems="center" my={2} >
@@ -45,6 +46,7 @@ const ListaSolictacoes = ({ route }) => {
   const { userClaims } = useContext(AuthContext);
   const [solicitacoes, setSolicitacoes] = useState([]);
   const [alerta, setAlerta] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setAlerta(route.params?.alerta);
@@ -56,10 +58,13 @@ const ListaSolictacoes = ({ route }) => {
   }, [route]);
 
   useFocusEffect(useCallback(() => {
-    obterSolicitacoesPorUsuario(userClaims.oid).then(setSolicitacoes);
+    setIsLoading(true);
+    obterSolicitacoesPorUsuario(userClaims.oid)
+      .then(setSolicitacoes)
+      .finally(() => setIsLoading(false));
   }, []));
 
-  return <VStack space={2} py={2} w={'90%'} h={'100%'} alignSelf={'center'} >
+  return isLoading ? <Loading /> : <VStack space={2} py={2} w={'90%'} h={'100%'} alignSelf={'center'} >
     {alerta && <CustomAlert status={alerta.status} title={alerta.title} closeHandler={() => setAlerta(null)} />}
     <FlatList showsVerticalScrollIndicator={false} data={solicitacoes} renderItem={({ item }) => <SolicitacaoCard {...item} />} />
   </VStack>
